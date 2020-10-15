@@ -1,34 +1,37 @@
 
-// read .json data
-d3.json("samples.json").then((data) => {
-  var samples = data.samples;
-  var resultArray = samples.filter((sampleObj) => sampleObj.id == idx);
-  var result = resultArray[0];
-  console.log(result);
-  var sampleValues = result.sample_values;
-  var otuIds = result.otu_ids;
-  var otuLabels = result.otu_labels;
+// function to build charts
+function makeCharts(vals) {
+  // read .json data
+  d3.json("samples.json").then((data) => {
+    var samples = data.samples;
+    var resultArray = samples.filter((sampleObj) => sampleObj.id == vals);
+    var result = resultArray[0];
+    // console.log(result);
+    var sampleValues = result.sample_values;
+    // Only take top 10
+    var filteredValues = sampleValues.slice(0, 10);
+    // Sort descending
+    filteredValues = filteredValues.reverse();
+    var otuIds = result.otu_ids;
+    var otuLabels = result.otu_labels;
+    // metadata
+    var metadata = data.metadata;
+    var metadataArray = metadata.filter((sampleObj) => sampleObj.id == vals);
+    var metadataResult = metadataArray[0];
 
-  // Sort descending
+    // Create trace
+    let trace1 = {
+      x: filteredValues,
+      y: otuIds,
+      text: otuLabels,
+      type: "bar",
+      orientation: "h",
+    };
 
-  // Only take top 10
-
-  // Create bar chart trace
-  // let trace1 = {
-  //     x: ,
-  //     y: ,
-  //     type: 'bar',
-  //     orientation: 'h'
-  // };
-  // Use sample_values as the values for the bar chart.
-
-  // Use otu_ids as the labels for the bar chart.
-
-  // Use otu_labels as the hovertext for the chart.
-  // let traces = [trace1];
-  // let layout = {
-
-  // };
-
-  // Plotly.newPlot("bar", traces, layout);
-});
+    let traces = [trace1];
+    let layout = {};
+    
+    // Create bar chart
+    Plotly.newPlot("bar", traces, layout);
+  });
+};
